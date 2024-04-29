@@ -14,9 +14,9 @@ pipeline {
         }
         stage ('Build Code') {
             steps {
-                echo "-----Build_started------"
+                echo "-----Build_started by soumya------"
                 sh "/opt/apache-maven-3.9.6/bin/mvn clean package "
-                echo "-------Build_End-----------"
+                echo "-------Build_Ended by soumya-----------"
             }
         }
 
