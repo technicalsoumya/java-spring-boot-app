@@ -1,24 +1,23 @@
 pipeline {
-    agent {
+       agent {
         node {
-            label "jenkins-slave-node"
+            label 'jenkins-slave-node'
         }
     }
+ 
+    
+    environment {
+        PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
+    }
     stages {
-        stage ('CheckOut Code') {
+        stage("Build Stage"){
             steps {
-                echo "------Check_Out_Started------"
-                git branch: "main" , url: "https://github.com/technicalsoumya/java-web-app.git"
-                echo "--------Check_Out_End--------"
+                echo "----------- build started ----------"
+                sh 'mvn clean deploy -Dmaven.test.skip=true'
+                echo "----------- build completed ----------"
             }
         }
-        stage ('Build Code') {
-            steps {
-                echo "-----Build_started by soumya------"
-                sh "/opt/apache-maven-3.9.6/bin/mvn clean package "
-                echo "-------Build_Ended by soumya-----------"
-            }
-        }
+         
         stage("Test Stage"){
             steps{
                 echo "----------- unit test started ----------"
@@ -26,6 +25,31 @@ pipeline {
                 echo "----------- unit test Completed ----------"
             }
         }
+        /*
+        stage('SonarQube Analysis') {
+            environment {
+                scannerHome = tool 'sonar-scanner-meportal'
+            }
+            steps{
+                withSonarQubeEnv('sonar-server-meportal') {
+                    sh "${scannerHome}/bin/sonar-scanner"
+                }
+            }
+        }
+
+        stage("Quality Gate"){
+            steps {
+                script {
+                    timeout(time: 1, unit: 'HOURS') { 
+                        def qg = waitForQualityGate() 
+                        if (qg.status != 'OK') {
+                            error "Pipeline aborted due to quality gate failure: ${qg.status}"
+                        }
+                    }
+                }
+            }
+        }
+        */
         stage("Artifact Publish") {
             steps {
                 script {
@@ -36,7 +60,7 @@ pipeline {
                         "files": [
                             {
                                 "pattern": "staging/(*)",
-                                "target": "soumya",
+                                "target": "soumya/{1}",
                                 "flat": "false",
                                 "props" : "${properties}",
                                 "exclusions": [ "*.sha1", "*.md5"]
