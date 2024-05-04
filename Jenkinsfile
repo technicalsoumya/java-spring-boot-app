@@ -74,7 +74,7 @@ pipeline {
                 }
             }   
         }
-        stage(" Create Docker Image ") {
+         stage(" Create Docker Image ") {
             steps {
                 script {
                     echo '-------------- Docker Build Started -------------'
@@ -88,13 +88,12 @@ pipeline {
             steps {
                 script {
                         echo '---------- Docker Publish Started --------'  
-                        docker.withRegistry("meportal.jfrog.io", 'jfrog-cred'){
+                        docker.withRegistry("https://meportal.jfrog.io", 'jfrog-cred'){
                         app.push()
                         echo '------------ Docker Publish Ended ---------'  
                     }    
                 }
             }
-        }
 
     }
 }
