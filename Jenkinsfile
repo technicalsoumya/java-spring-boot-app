@@ -10,6 +10,11 @@ pipeline {
         PATH = "/opt/apache-maven-3.9.6/bin:$PATH"
     }
     stages {
+        stage("checkout code"){
+            steps{
+                git branch: 'main' , url: 'https://github.com/technicalsoumya/java-spring-boot-app.git'
+            }
+        }
         stage("Build Stage"){
             steps {
                 echo "----------- build started ----------"
@@ -60,7 +65,7 @@ pipeline {
                         "files": [
                             {
                                 "pattern": "staging/(*)",
-                                "target": "soumya/{1}",
+                                "target": "soumya18/{1}",
                                 "flat": "false",
                                 "props" : "${properties}",
                                 "exclusions": [ "*.sha1", "*.md5"]
@@ -74,26 +79,25 @@ pipeline {
                 }
             }   
         }
-         stage(" Create Docker Image ") {
+        stage(" Create Docker Image ") {
             steps {
                 script {
                     echo '-------------- Docker Build Started -------------'
-                    app = docker.build("meportal.jfrog.io/meportal-docker-local/myapp:1.0")
+                    app = docker.build("meportal18.jfrog.io/soumya18-docker-local/myapp:1.0")
                     echo '-------------- Docker Build Ended -------------'
                 }
             }
         }
-
         stage (" Docker Publish "){
             steps {
                 script {
                         echo '---------- Docker Publish Started --------'  
-                        docker.withRegistry("https://meportal.jfrog.io", 'jfrog-cred'){
+                        docker.withRegistry("https://meportal18.jfrog.io", 'jfrog-cred'){
                         app.push()
                         echo '------------ Docker Publish Ended ---------'  
                     }    
                 }
             }
-
+        }
     }
 }
