@@ -83,7 +83,7 @@ pipeline {
             steps {
                 script {
                     echo '-------------- Docker Build Started -------------'
-                    app = docker.build("soumya18.jfrog.io/artifactory/docker-repo-docker-local/myapp:1.0.1")
+                    app = docker.build("soumya18.jfrog.io/artifactory/docker-repo-docker-local/myapp:1.0")
                     echo '-------------- Docker Build Ended -------------'
                 }
             }
